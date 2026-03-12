@@ -12,7 +12,7 @@ public class ClienteEstudiante implements Runnable {
     private static final int PUERTO_DISPATCHER = 5000; 
     private final String idEstudiante;
 
-    // 📊 CONTADORES GLOBALES
+    // CONTADORES GLOBALES
     public static AtomicInteger exitosos = new AtomicInteger(0);
     public static AtomicInteger fallidos = new AtomicInteger(0);
 
@@ -24,7 +24,7 @@ public class ClienteEstudiante implements Runnable {
     public void run() {
         int puertoDestino = -1;
 
-        // --- PASO 1: SOLICITAR NODO AL DISPATCHER (MAESTRO) ---
+        // SOLICITAR NODO AL DISPATCHER (MAESTRO)
         try (Socket socketDisp = new Socket(HOST, PUERTO_DISPATCHER);
              PrintWriter outDisp = new PrintWriter(socketDisp.getOutputStream(), true);
              BufferedReader inDisp = new BufferedReader(new InputStreamReader(socketDisp.getInputStream()))) {
@@ -42,25 +42,22 @@ public class ClienteEstudiante implements Runnable {
             return; // Si el Maestro cae, el cliente no puede hacer nada
         }
 
-        // --- PASO 2: CONECTARSE AL SERVIDOR ASIGNADO Y ESPERAR TURNO ---
+        // CONECTARSE AL SERVIDOR ASIGNADO Y ESPERAR TURNO
         if (puertoDestino != -1) {
             try (Socket socketNodo = new Socket(HOST, puertoDestino)) {
                 
-                // ❌ SE ELIMINÓ EL TIMEOUT. Ahora el hilo esperará bloqueado hasta ser atendido.
-
                 PrintWriter out = new PrintWriter(socketNodo.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socketNodo.getInputStream()));
                 
                 System.out.println("⏳ " + idEstudiante + " -> Llegó al Nodo " + puertoDestino + " y está haciendo fila...");
                 out.println(idEstudiante);
                 
-                // Aquí el estudiante se queda "congelado" pacientemente si el semáforo del servidor está lleno
                 String respuesta = in.readLine(); 
                 
                 if (respuesta != null) {
                     System.out.println("✅ " + idEstudiante + " -> ¡Éxito! Equipo #" + respuesta + " en Nodo " + puertoDestino);
                     
-                    // Simular trabajo (5 a 10 segundos)
+                    // Simular trabajo
                     int tiempoUso = ThreadLocalRandom.current().nextInt(5000, 10000);
                     Thread.sleep(tiempoUso);
                     
@@ -90,9 +87,8 @@ public class ClienteEstudiante implements Runnable {
         
         executor.shutdown(); 
 
-        // 🛑 REPORTE FINAL
+        // REPORTE FINAL
         try {
-            // Aumentamos el awaitTermination a 5 minutos para que dé tiempo de que pasen los 30 alumnos
             if (executor.awaitTermination(5, TimeUnit.MINUTES)) {
                 System.out.println("\n📊 === REPORTE FINAL DE LA SIMULACIÓN ===");
                 System.out.println("Total de estudiantes enviados: " + totalClientes);

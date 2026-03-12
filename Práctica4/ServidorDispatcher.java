@@ -3,13 +3,13 @@ import java.net.*;
 
 public class ServidorDispatcher {
     private static final int PUERTO_PUBLICO = 5000;
-    // Estos son los puertos de tus Servidores Gráficos reales (Nodos Trabajadores)
+    // Estos son los puertos de los Servidores Gráficos reales (Nodos Trabajadores)
     private static final int[] NODOS_TRABAJADORES = {6001, 6002, 6003}; 
     private static int indiceTurno = 0; // Para el algoritmo Round-Robin
 
     public static void main(String[] args) {
-        System.out.println("👑 DISPATCHER (MAESTRO) INICIADO EN PUERTO " + PUERTO_PUBLICO);
-        System.out.println("🔀 Balanceando carga entre los nodos: 6001, 6002, 6003...");
+        System.out.println("DISPATCHER (MAESTRO) INICIADO EN PUERTO " + PUERTO_PUBLICO);
+        System.out.println("Balanceando carga entre los nodos: 6001, 6002, 6003...");
         System.out.println("==========================================================");
 
         try (ServerSocket serverSocket = new ServerSocket(PUERTO_PUBLICO)) {
@@ -43,7 +43,7 @@ public class ServidorDispatcher {
 
                     int puertoAsignado;
                     
-                    // 🔒 SECCIÓN CRÍTICA: Asignamos el turno de forma segura
+                    // SECCIÓN CRÍTICA: Asignamos el turno de forma segura
                     synchronized (ServidorDispatcher.class) {
                         puertoAsignado = NODOS_TRABAJADORES[indiceTurno];
                         // Avanzamos al siguiente puerto. Si llegamos al final, volvemos a empezar (Round-Robin)

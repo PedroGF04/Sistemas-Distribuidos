@@ -36,7 +36,7 @@ public class ServidorGrafico extends JFrame {
         }
     }
 
-    // 🔒 SECCIÓN CRÍTICA: Solo un hilo puede escribir en el archivo a la vez
+    //SECCIÓN CRÍTICA: Solo un hilo puede escribir en el archivo a la vez
     private synchronized void guardarEnReporte(String id, int equipo, long tiempoUsoMs) {
         String fechaHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         long segundos = tiempoUsoMs / 1000;
@@ -121,12 +121,12 @@ public class ServidorGrafico extends JFrame {
                 actualizarUI(miPC, id, true);
                 out.println(miPC); 
 
-                // ⏱️ INICIA EL CRONÓMETRO DE USO
+                // INICIA EL CRONÓMETRO DE USO
                 long inicioCrono = System.currentTimeMillis();
 
                 in.readLine(); // Espera a que el cliente envíe "LIBERAR"
 
-                // ⏱️ DETIENE EL CRONÓMETRO
+                // DETIENE EL CRONÓMETRO
                 long finCrono = System.currentTimeMillis();
                 long tiempoTotal = finCrono - inicioCrono;
 
